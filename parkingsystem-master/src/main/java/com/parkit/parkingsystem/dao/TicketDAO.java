@@ -76,8 +76,12 @@ public class TicketDAO {
                 Calendar inTime = Calendar.getInstance();
                 inTime.setTimeInMillis(rs.getTimestamp(4).getTime());
                 ticket.setInTime(inTime);
-                Calendar outTime = Calendar.getInstance();
-                outTime.setTimeInMillis(rs.getTimestamp(5).getTime());
+                //check if outTime exists
+                Calendar outTime = null;
+                if (rs.getTimestamp(5)!=null) {
+                	outTime = Calendar.getInstance();
+                	outTime.setTimeInMillis(rs.getTimestamp(5).getTime());
+                }
                 ticket.setOutTime(outTime);
             }
             dataBaseConfig.closeResultSet(rs);
