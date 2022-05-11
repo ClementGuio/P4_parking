@@ -20,6 +20,22 @@ public class TicketDAO {
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+    public boolean isRecurrentUser(Ticket ticket) {
+    	Connection con = null;
+    	try {
+    		con = dataBaseConfig.getConnection();
+    		PreparedStatement ps = con.prepareStatement(DBConstants.GET_RECURRENT_TICKET);
+    		ps.setString(1,ticket.getVehicleRegNumber());
+    		ResultSet rs = ps.executeQuery();
+    		return rs.next();
+    	}catch (Exception e) {
+    		logger.error("Error fetching tickets",e);
+    	}finally {
+    		dataBaseConfig.closeConnection(con);
+    	}
+    	return false;
+    }
+    
     public boolean saveTicket(Ticket ticket){
         Connection con = null;
         try {
