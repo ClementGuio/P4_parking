@@ -32,15 +32,16 @@ public class ParkingService {
     }
     
 
-    public void processIncomingVehicle() {
+    public void processIncomingVehicle() throws ClassNotFoundException, SQLException, IllegalArgumentException, IllegalStateException, NoSuchElementException{
+    	logger.info("Incoming vehicle");
         try{
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
-                
-                if (ticketDAO.hasUnpaidTicket(vehicleRegNumber)) {
-                	System.out.println("You have an unpaid ticket. Please pay your due.");
-                	throw new SQLException("There is an unpaid ticket stored in database.");
+                System.out.println(vehicleRegNumber);
+                if (ticketDAO.hasTicketWithoutOutTime(vehicleRegNumber)) {
+                	System.out.println("You already have a ticket pending payment.");
+                	throw new SQLException("There is a ticket without out time stored in database.");
                 }
                 
                 parkingSpot.setAvailable(false);
@@ -63,26 +64,31 @@ public class ParkingService {
                 		+" "+inTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
             }
         }catch(ClassNotFoundException ce){
-            logger.error("Unable to process incoming vehicle",ce);
+            logger.error("Unable to process incoming vehicle");
+            throw ce;
         }catch(SQLException se) {
-        	logger.error("Unable to process incoming vehicle",se);
+        	logger.error("Unable to process incoming vehicle");
+        	throw se;
         }
     }
 
-    private String getVehichleRegNumber() {
+    private String getVehichleRegNumber() throws IllegalArgumentException, IllegalStateException, NoSuchElementException {
     	String vehicleRegNumber = "";
         System.out.println("Please type the vehicle registration number and press enter key");
         try {
         	vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
         }catch(IllegalArgumentException iae) {
-        	logger.error("Invalid input", iae);
-        	System.out.println("Please enter a valid string for vehicle registration number");
+        	logger.error("Invalid input for vehicleRegNumber");
+        	System.out.println("Please enter a valid vehicle registration number");
+        	throw iae;
         }catch(IllegalStateException ise) {
-        	logger.error("Error while reading user input from Shell", ise);
+        	logger.error("Error while reading user input from Shell");
         	System.out.println("Error reading input. Please try try again");
+        	throw ise;
         }catch(NoSuchElementException ne){
-            logger.error("Error while reading user input from Shell", ne);
-            System.out.println("Error reading input. Please enter a valid string for vehicle registration number");
+            logger.error("Error while reading user input from Shell");
+            System.out.println("Error reading input. Please enter a valid vehicle registration number");
+            throw ne;
         }
         return vehicleRegNumber;
         
@@ -123,9 +129,16 @@ public class ParkingService {
         }
     }
     
-    public void processExitingVehicle() {
-        try{
+    public void processExitingVehicle() throws ClassNotFoundException, SQLException, IllegalArgumentException, IllegalStateException, NoSuchElementException, NullPointerException{
+        logger.info("Exiting vehicle");
+    	try{
             String vehicleRegNumber = getVehichleRegNumber();
+            
+            if (!ticketDAO.hasTicketWithoutOutTime(vehicleRegNumber)) {
+            	System.out.println("You don't have any ticket registered");
+            	throw new SQLException("There is no ticket without out time stored in database.");
+            }
+            
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             LocalDateTime outTime = LocalDateTime.now();
             ticket.setOutTime(outTime);
@@ -142,17 +155,23 @@ public class ParkingService {
                 System.out.println("Unable to update ticket information. Error occurred");
             }
         }catch(ClassNotFoundException ce){
-            logger.error("Unable to process exiting vehicle",ce);
+            logger.error("Unable to process exiting vehicle");
+            throw ce;
         }catch(SQLException se){
-            logger.error("Unable to process exiting vehicle",se);
+            logger.error("Unable to process exiting vehicle");
+            throw se;
         }catch(IllegalArgumentException iae){
-            logger.error("Unable to process exiting vehicle",iae);
+            logger.error("Unable to process exiting vehicle");
+            throw iae;
         }catch(IllegalStateException ise){
-            logger.error("Unable to process exiting vehicle",ise);
-        }catch(NoSuchElementException ne){
-            logger.error("Unable to process exiting vehicle",ne);
-        }catch(NullPointerException ne) {
-        	logger.error("Unable to process exiting vehicle", ne);
+            logger.error("Unable to process exiting vehicle");
+            throw ise;
+        }catch(NoSuchElementException nse){
+            logger.error("Unable to process exiting vehicle");
+            throw nse;
+        }catch(NullPointerException npe) {
+        	logger.error("Unable to process exiting vehicle");
+        	throw npe;
         }
     }
 }

@@ -11,33 +11,37 @@ public class InputReaderUtil {
     private static Scanner scan = new Scanner(System.in);
     private static final Logger logger = LogManager.getLogger("InputReaderUtil");
 
-    public int readSelection(){
+    public int readSelection() throws NumberFormatException{
         int input = -1;
     	try {
             input = Integer.parseInt(scan.nextLine());
         }catch(NumberFormatException ne){
-            logger.error("Error while reading user input from Shell", ne);
+            logger.error("Error while reading user input from Shell");
             System.out.println("Error reading input. Please enter valid number for proceeding further");
+            throw ne;
         }
         return input;
     }
  
-    public String readVehicleRegistrationNumber(){
+    public String readVehicleRegistrationNumber() throws IllegalStateException, IllegalArgumentException, NoSuchElementException{
         String vehicleRegNumber = "";
     	try {
             vehicleRegNumber= scan.nextLine();
-            if(vehicleRegNumber == null || vehicleRegNumber.trim().length()==0) {//verifier caractères spéciaux
+            if(vehicleRegNumber == null || vehicleRegNumber.trim().length()==0) {
                 throw new IllegalArgumentException("Invalid input provided");
             }
         }catch(IllegalStateException ie) {
-        	logger.error("Error while reading user input from Shell", ie);
+        	logger.error("Error while reading user input from Shell");
         	System.out.println("Error reading input. Please try again");
+        	throw ie;
     	}catch(NoSuchElementException ne){
-            logger.error("Error while reading user input from Shell", ne);
+            logger.error("Error while reading user input from Shell");
             System.out.println("Error reading input. Please enter a valid string for vehicle registration number");
+            throw ne;
     	}catch (IllegalArgumentException iae) {
-    		logger.error("Error while reading user input from shell", iae);
+    		logger.error("Error while reading user input from shell");
     		System.out.println("Error reading input. Please enter a valid string for vehicle registration number");
+    		throw iae;
     	}
     	return vehicleRegNumber;
     }

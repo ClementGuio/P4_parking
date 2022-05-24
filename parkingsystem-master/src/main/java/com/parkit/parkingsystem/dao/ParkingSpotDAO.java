@@ -20,21 +20,29 @@ public class ParkingSpotDAO {
     public int getNextAvailableSlot(ParkingType parkingType) throws ClassNotFoundException, SQLException{
     	int result=-1;
     	Connection con = null;
-        
-        con = dataBaseConfig.getConnection();
-        PreparedStatement ps = con.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);
-        ps.setString(1, parkingType.toString());
-        ResultSet rs = ps.executeQuery();
-        if(rs.next()){
-            result = rs.getInt(1);;
+        try {
+        	con = dataBaseConfig.getConnection();
+        	PreparedStatement ps = con.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);
+        	ps.setString(1, parkingType.toString());
+        	ResultSet rs = ps.executeQuery();
+        	if(rs.next()){
+        		result = rs.getInt(1);;
+        	}
+        	dataBaseConfig.closeResultSet(rs);
+        	dataBaseConfig.closePreparedStatement(ps);
+        }catch(SQLException se) {
+        	logger.error("Error fetcching parking spot");
+        	throw se;
+        }catch(ClassNotFoundException ce) {
+        	logger.error("Error fetching parking spot");
+        	throw ce;
+        }finally {
+        	dataBaseConfig.closeConnection(con);
         }
-        dataBaseConfig.closeResultSet(rs);
-        dataBaseConfig.closePreparedStatement(ps);
-        
         return result;
     }
 
-    public boolean updateParking(ParkingSpot parkingSpot){
+    public boolean updateParking(ParkingSpot parkingSpot) throws ClassNotFoundException, SQLException{
         Connection con = null;
     	try {
     		con = dataBaseConfig.getConnection();
@@ -43,17 +51,17 @@ public class ParkingSpotDAO {
     		ps.setInt(2, parkingSpot.getId());
     		int updateRowCount = ps.executeUpdate();
     		dataBaseConfig.closePreparedStatement(ps);
-    		dataBaseConfig.closeConnection(con);
-    		
+    		dataBaseConfig.closeConnection(con);	
     		return (updateRowCount == 1);
     	}catch(ClassNotFoundException ce) {
-    		logger.error("Error updating parking spot", ce);
+    		logger.error("Error updating parking spot");
+    		throw ce;
     	}catch(SQLException se) {
-    		logger.error("Error updating parking spot", se);
+    		logger.error("Error updating parking spot");
+    		throw se;
     	}finally {
     		dataBaseConfig.closeConnection(con);
     	}
-        return false;
     }
     
 }

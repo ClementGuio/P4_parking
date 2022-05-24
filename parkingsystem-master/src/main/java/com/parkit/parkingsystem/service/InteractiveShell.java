@@ -7,11 +7,14 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
+import java.util.NoSuchElementException;
+
 public class InteractiveShell {
 
     private static final Logger logger = LogManager.getLogger("InteractiveShell");
 
-    public static void loadInterface() {
+    public static void loadInterface() throws SQLException, ClassNotFoundException, NumberFormatException, IllegalArgumentException, IllegalStateException, NoSuchElementException {
         logger.info("App initialized!!!");
         System.out.println("Welcome to Parking System!");
 
