@@ -16,7 +16,7 @@ public class DataBaseConfig {
                 "jdbc:mysql://localhost:3306/prod?serverTimezone=Europe/Rome","root","rootroot");
     }
 
-    public void closeConnection(Connection con){
+    public void closeConnection(Connection con) /*throws SQLException*/{
         if(con!=null){
             try {
                 con.close();
@@ -27,25 +27,25 @@ public class DataBaseConfig {
         }
     }
 
-    public void closePreparedStatement(PreparedStatement ps) {
+    public void closePreparedStatement(PreparedStatement ps) throws SQLException {
         if(ps!=null){
-            try {
+            //try {
                 ps.close();
                 logger.info("Closing Prepared Statement");
-            } catch (SQLException e) {
+            /*} catch (SQLException e) {
                 logger.error("Error while closing prepared statement",e);
-            }
+            }*/
         }
     }
 
-    public void closeResultSet(ResultSet rs) {
+    public void closeResultSet(ResultSet rs) throws SQLException{
         if(rs!=null){
-            try {
+            //try {
                 rs.close();
                 logger.info("Closing Result Set");
-            } catch (SQLException e) {
+            /*} catch (SQLException e) {
                 logger.error("Error while closing result set",e);
-            }
+            }*/
         }
     }
 }

@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.*;
 
@@ -37,8 +37,7 @@ public class ParkingServiceTest {
 
             ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
             Ticket ticket = new Ticket();
-            ticket.setInTime(Calendar.getInstance());
-            ticket.getInTime().add(Calendar.HOUR, -1);
+            ticket.setInTime(LocalDateTime.now().minusHours(1));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
             when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
@@ -56,7 +55,9 @@ public class ParkingServiceTest {
     @Test
     public void processExitingVehicleTest(){
         parkingService.processExitingVehicle();
+        
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        
     }
 
 }

@@ -1,6 +1,10 @@
 package com.parkit.parkingsystem;
 
 import com.parkit.parkingsystem.service.InteractiveShell;
+
+import java.sql.SQLException;
+import java.util.NoSuchElementException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

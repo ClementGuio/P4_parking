@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.when;
+import java.util.Calendar;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
@@ -80,6 +81,11 @@ public class ParkingDataBaseIT {
         parkingService.processExitingVehicle();
         
         //TODO: check that the fare generated and out time are populated correctly in the database
+        Ticket ticket = ticketDAO.getTicket("ParkingCar");
+        double price = ticket.getPrice();
+        //Calendar outTime = ticket.getOutTime();
+        
+        assertEquals(price,0);
     }
 
 }
