@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.when;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.sql.SQLException;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
@@ -43,9 +44,9 @@ public class ParkingDataBaseIT {
 
     @BeforeEach
     private void setUpPerTest() throws Exception {
-        when(inputReaderUtil.readSelection()).thenReturn(1);
+        /*when(inputReaderUtil.readSelection()).thenReturn(1);
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-        dataBasePrepareService.clearDataBaseEntries();
+        */dataBasePrepareService.clearDataBaseEntries();
     }
 
     @AfterEach 
@@ -76,16 +77,54 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingLotExit() throws Exception{
-        testParkingACar();
+    	when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("CarExit");
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+        
         parkingService.processExitingVehicle();
         
         //TODO: check that the fare generated and out time are populated correctly in the database
-        Ticket ticket = ticketDAO.getTicket("ParkingCar");
+        Ticket ticket = ticketDAO.getTicket("CarExit");
         double price = ticket.getPrice();
-        //Calendar outTime = ticket.getOutTime();
+        LocalDateTime outTime = ticket.getOutTime();
         
         assertEquals(price,0);
+        assertNotNull(outTime);
     }
+    
+    @Test
+    public void testParkingCarTwice() throws Exception{
+    	when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("SameCar").thenReturn("SameCar");
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+        
+        assertThrows(SQLException.class, () -> parkingService.processIncomingVehicle(),"There is a ticket without out time stored in database.");
+    }
+    
+    @Test
+    public void testParkingLotFull() throws Exception{
+    	when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("Car1").thenReturn("Car2").thenReturn("Car3").thenReturn("TooMuchCar");
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        for (int i=0;i<3;i++) {
+        	parkingService.processIncomingVehicle();
+        }
+        
+        assertThrows(SQLException.class, () -> parkingService.processIncomingVehicle(), "Error fetching parking number from DB. Parking slots might be full");
+        
+        
+    }
+    
+    @Test
+    public void testParkingLotExitUnknownCar() throws Exception{
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("Unknown");
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        
+        assertThrows(SQLException.class, () -> parkingService.processExitingVehicle(), "Error fetching parking number from DB. Parking slots might be full");
+    }
+    
+    
 
 }

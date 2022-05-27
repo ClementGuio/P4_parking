@@ -38,7 +38,6 @@ public class ParkingService {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
-                System.out.println(vehicleRegNumber);
                 if (ticketDAO.hasTicketWithoutOutTime(vehicleRegNumber)) {
                 	System.out.println("You already have a ticket pending payment.");
                 	throw new SQLException("There is a ticket without out time stored in database.");

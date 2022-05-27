@@ -11,5 +11,4 @@ public class DBConstants {
     
     public static final String GET_TICKET_WITHOUT_OUT_TIME = "select * from ticket t where t.VEHICLE_REG_NUMBER = ? and OUT_TIME is null";
     public static final String GET_RECURRENT_TICKET = "select * from ticket where VEHICLE_REG_NUMBER = ? and OUT_TIME is not null";
-    public static final String RESET_PARKING = "update parking set available = 1";
 }

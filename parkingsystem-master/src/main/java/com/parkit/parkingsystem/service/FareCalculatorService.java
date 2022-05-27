@@ -4,12 +4,23 @@ import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
 import java.lang.Math;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 
 public class FareCalculatorService {
 
+	public static final double BIKE_RATE_PER_QUARTER = Fare.BIKE_RATE_PER_HOUR / 4;
+    public static final double CAR_RATE_PER_QUARTER = Fare.CAR_RATE_PER_HOUR / 4;
+	
     public void calculateFare(Ticket ticket, boolean isRecurrent) throws IllegalArgumentException{
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime())) ){
+        	System.out.println("Recorded in-time for vehicle number:"+ticket.getVehicleRegNumber()
+                		+" is:"+ticket.getInTime().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+                		+" "+ticket.getInTime().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
+        	System.out.println("Recorded out-time for vehicle number:"+ticket.getVehicleRegNumber()
+    		+" is:"+ticket.getOutTime().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+    		+" "+ticket.getOutTime().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
 
@@ -20,11 +31,11 @@ public class FareCalculatorService {
         if (quarters>2) {
         	switch (ticket.getParkingSpot().getParkingType()){
             	case CAR: {
-            		price = quarters * Fare.CAR_RATE_PER_QUARTER;
+            		price = quarters * CAR_RATE_PER_QUARTER;
             		break;
             	}
             	case BIKE: {
-            		price = quarters * Fare.BIKE_RATE_PER_QUARTER;
+            		price = quarters * BIKE_RATE_PER_QUARTER;
             		break;
             	}
             	default: throw new IllegalArgumentException("Unkown Parking Type");
