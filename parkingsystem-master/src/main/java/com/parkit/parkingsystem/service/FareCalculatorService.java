@@ -14,12 +14,12 @@ public class FareCalculatorService {
     public void calculateFare(Ticket ticket, boolean isRecurrent) throws IllegalArgumentException{
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime())) ){
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
-        }
-
+        } 
+        //Compute duration in quarters
         long duration = ticket.getInTime().until(ticket.getOutTime(), ChronoUnit.MINUTES);
         long quarters = (duration%15)==0 ? duration/15 : (duration/15) + 1; 
         double price = 0;
-        
+        //Check if more than half hour, else let price to 0
         if (quarters>2) {
         	switch (ticket.getParkingSpot().getParkingType()){
             	case CAR: {
@@ -32,10 +32,12 @@ public class FareCalculatorService {
             	}
             	default: throw new IllegalArgumentException("Unkown Parking Type");
             	}
+        	//Discount for recurrent users
         	if (isRecurrent) {
         		price *= 0.95;
         	}
         }
+        //Round price and set ticket
         ticket.setPrice(Math.round(price*100)/100.0);
     }
 }

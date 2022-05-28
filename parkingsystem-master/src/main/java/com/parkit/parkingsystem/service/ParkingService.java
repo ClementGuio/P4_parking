@@ -31,13 +31,13 @@ public class ParkingService {
         this.ticketDAO = ticketDAO;
     }
     
-
     public void processIncomingVehicle() throws ClassNotFoundException, SQLException, IllegalArgumentException, IllegalStateException, NoSuchElementException{
     	logger.info("Incoming vehicle");
         try{
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
+                //Check if this vehicle isn't already in
                 if (ticketDAO.hasTicketWithoutOutTime(vehicleRegNumber)) {
                 	System.out.println("You already have a ticket pending payment.");
                 	throw new SQLException("There is a ticket without out time stored in database.");
@@ -48,8 +48,7 @@ public class ParkingService {
                 
                 LocalDateTime inTime = LocalDateTime.now();
                 Ticket ticket = new Ticket();
-                //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-                //ticket.setId(ticketID);
+                //Fields : ID (automatic increment), PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(0);
@@ -131,7 +130,7 @@ public class ParkingService {
         logger.info("Exiting vehicle");
     	try{
             String vehicleRegNumber = getVehichleRegNumber();
-            
+            //Check if this vehicle has entered
             if (!ticketDAO.hasTicketWithoutOutTime(vehicleRegNumber)) {
             	System.out.println("Your vehicle isn't recognized. You don't have any ticket registered");
             	throw new SQLException("There is no ticket without out time stored in database.");
