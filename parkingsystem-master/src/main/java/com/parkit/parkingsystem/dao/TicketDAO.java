@@ -30,10 +30,10 @@ public class TicketDAO {
     		ResultSet rs = ps.executeQuery();
     		return rs.next();
     	}catch(SQLException se) {
-    		logger.error("Error fetching ticket");
+    		logger.error("Error fetching ticket from recurrent user");
     		throw se;
     	}catch(ClassNotFoundException ce) {
-    		logger.error("Error fetching ticket");
+    		logger.error("Error fetching ticket from recurrent user");
     		throw ce;
     	}
     }
@@ -47,10 +47,10 @@ public class TicketDAO {
     		ResultSet rs = ps.executeQuery();
     		return rs.next();
     	}catch(SQLException se) {
-    		logger.error("Error fetching ticket");
+    		logger.error("Error fetching ticket without out time");
     		throw se;
     	}catch(ClassNotFoundException ce) {
-    		logger.error("Error fetching ticket");
+    		logger.error("Error fetching ticket without out time");
     		throw ce;
     	}finally {
     		dataBaseConfig.closeConnection(con);
@@ -58,7 +58,7 @@ public class TicketDAO {
     }
     
     public boolean saveTicket(Ticket ticket) throws SQLException, ClassNotFoundException{
-        Connection con = null; 
+        Connection con = null;
         try {
         	con = dataBaseConfig.getConnection();
         	PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);

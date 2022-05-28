@@ -11,6 +11,7 @@ public class InputReaderUtil {
     private static Scanner scan = new Scanner(System.in);
     private static final Logger logger = LogManager.getLogger("InputReaderUtil");
 
+	
     public int readSelection() throws NumberFormatException{
         int input = -1;
     	try {
@@ -45,6 +46,4 @@ public class InputReaderUtil {
     	}
     	return vehicleRegNumber;
     }
-
-
 }

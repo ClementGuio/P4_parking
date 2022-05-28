@@ -29,5 +29,6 @@ public class App {
         }catch(NoSuchElementException ne) {
         	logger.error("Error concerning entries", ne);
         }
+        
     }
 }

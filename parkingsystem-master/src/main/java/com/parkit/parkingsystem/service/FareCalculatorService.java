@@ -4,8 +4,6 @@ import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
 import java.lang.Math;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 
 public class FareCalculatorService {
@@ -15,12 +13,6 @@ public class FareCalculatorService {
 	
     public void calculateFare(Ticket ticket, boolean isRecurrent) throws IllegalArgumentException{
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime())) ){
-        	System.out.println("Recorded in-time for vehicle number:"+ticket.getVehicleRegNumber()
-                		+" is:"+ticket.getInTime().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
-                		+" "+ticket.getInTime().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
-        	System.out.println("Recorded out-time for vehicle number:"+ticket.getVehicleRegNumber()
-    		+" is:"+ticket.getOutTime().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
-    		+" "+ticket.getOutTime().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
 

@@ -31,10 +31,10 @@ public class ParkingSpotDAO {
         	dataBaseConfig.closeResultSet(rs);
         	dataBaseConfig.closePreparedStatement(ps);
         }catch(SQLException se) {
-        	logger.error("Error fetcching parking spot");
+        	logger.error("Error fetching next available parking spot");
         	throw se;
         }catch(ClassNotFoundException ce) {
-        	logger.error("Error fetching parking spot");
+        	logger.error("Error fetching next available parking spot");
         	throw ce;
         }finally {
         	dataBaseConfig.closeConnection(con);

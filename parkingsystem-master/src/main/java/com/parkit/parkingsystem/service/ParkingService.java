@@ -45,7 +45,7 @@ public class ParkingService {
                 
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
-
+                
                 LocalDateTime inTime = LocalDateTime.now();
                 Ticket ticket = new Ticket();
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
@@ -78,7 +78,6 @@ public class ParkingService {
         	vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
         }catch(IllegalArgumentException iae) {
         	logger.error("Invalid input for vehicleRegNumber");
-        	System.out.println("Please enter a valid vehicle registration number");
         	throw iae;
         }catch(IllegalStateException ise) {
         	logger.error("Error while reading user input from Shell");
@@ -122,8 +121,8 @@ public class ParkingService {
                 return ParkingType.BIKE;
             }
             default: {
-                System.out.println("Incorrect input provided");
-                throw new IllegalArgumentException("Entered input is invalid");
+                System.out.println("Incorrect input provided.");
+                throw new IllegalArgumentException("Invalid input while getting vehicle type");
             }
         }
     }
@@ -134,7 +133,7 @@ public class ParkingService {
             String vehicleRegNumber = getVehichleRegNumber();
             
             if (!ticketDAO.hasTicketWithoutOutTime(vehicleRegNumber)) {
-            	System.out.println("You don't have any ticket registered");
+            	System.out.println("Your vehicle isn't recognized. You don't have any ticket registered");
             	throw new SQLException("There is no ticket without out time stored in database.");
             }
             
